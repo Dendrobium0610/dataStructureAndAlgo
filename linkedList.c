@@ -1,7 +1,3 @@
-#ifndef _LINKEDLIST_H_
-#define _LINKEDLIST_H_
-
-
 #include "linkedList.h"
 #include <stdio.h>
 #include <stdint.h>
@@ -26,6 +22,7 @@ list_t* newList(int32_t *arr, uint32_t arrLen){
     Obj->Remove = &removeNode;
     Obj->Show = &showList;
     Obj->GetLen = &getLen;
+    Obj->Insert = &insertNode;
 
     for(int idx = 1; idx < arrLen; idx++){
         node_t *newNode = (node_t*)malloc(sizeof(node_t));
@@ -70,10 +67,11 @@ static void appendNode(list_t *Obj, int32_t val){
 }
 
 
-static void removeNode(list_t *Obj, uint32_t number){
+static void removeNode(list_t *Obj, uint32_t position){
+    //remove the element at position from list
     uint32_t cnt=1;
     node_t **indirect = &Obj->head, **prev, *target;
-    while(cnt != number){
+    while(cnt != position){
         prev = indirect;
         indirect = &(*indirect)->next;
         cnt++;
@@ -106,4 +104,24 @@ static uint32_t getLen(list_t *Obj){
 }
 
 
-#endif
+static void insertNode(list_t *Obj, uint32_t position, int32_t val){
+    node_t **indirect = &Obj->head, **origin, **prev;
+
+    node_t *newNode = (node_t*)malloc(sizeof(node_t));
+    newNode->val = val;
+    newNode->next = newNode->prev = NULL;
+
+    uint32_t cnt = 1;
+
+    while(cnt != position){
+        prev = indirect;
+        indirect = &(*indirect)->next;
+        cnt++;
+    }
+    origin = indirect;
+    *indirect = newNode;
+    (*indirect)->prev = *prev;
+    (*indirect)->next = *origin;
+    (*origin)->prev = *indirect;
+}
+
