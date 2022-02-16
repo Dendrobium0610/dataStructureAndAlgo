@@ -11,7 +11,7 @@ typedef void (*fptrRemove)(list_t *Obj, uint32_t number);
 typedef void (*fptrShow)(list_t *Obj);
 typedef uint32_t (*fptrGetLen)(list_t *Obj);
 
-list_t* newList(int *arr);
+list_t* newList(int32_t *arr, uint32_t arrLen);
 void deleteList(list_t *list);
 
 static void showList(list_t *Obj);
@@ -22,15 +22,15 @@ static uint32_t getLen(list_t *Obj);
 
 
 struct node{
-    int32_t val;
+    int32_t     val;
     struct node *next;
     struct node *prev;
 };
 
 
 struct list{
-    node_t *head;
-    uint32_t len;
+    node_t     *head;
+    uint32_t   len;
 
     fptrAppend Append;
     fptrRemove Remove;
