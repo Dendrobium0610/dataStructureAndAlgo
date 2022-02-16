@@ -40,7 +40,6 @@ list_t* newList(int32_t *arr, uint32_t arrLen){
         curr = curr->next;
     }
     
-
     return Obj;
 }
 
@@ -73,14 +72,16 @@ static void appendNode(list_t *Obj, int32_t val){
 
 static void removeNode(list_t *Obj, uint32_t number){
     uint32_t cnt=1;
-    node_t **indirect = &Obj->head;
-    while(cnt < number-1){
+    node_t **indirect = &Obj->head, **prev, *target;
+    while(cnt != number){
+        prev = indirect;
         indirect = &(*indirect)->next;
         cnt++;
     }
-    node_t *target = (*indirect)->next;
-    (*indirect)->next = target->next;
-    (*indirect)->next->prev = (*indirect);    
+
+    target = *indirect;   
+    *indirect = target->next;
+    (*indirect)->prev = *prev;
     target->next = NULL;
     free(target);
     Obj->len--;
@@ -88,11 +89,12 @@ static void removeNode(list_t *Obj, uint32_t number){
 
 
 void deleteList(list_t *Obj){
-    node_t *curr = Obj->head, *tmp;
+    node_t *curr = Obj->head, *target;
 
     while(curr){
-        tmp = curr;
-        tmp->next = tmp->prev = NULL;
+        target = curr;
+        target->next = target->prev = NULL;
+        free(target);
         curr = curr->next;
     }
     free(Obj);
