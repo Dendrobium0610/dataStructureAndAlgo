@@ -105,7 +105,7 @@ static uint32_t getLen(list_t *Obj){
 
 
 static void insertNode(list_t *Obj, uint32_t position, int32_t val){
-    node_t **indirect = &Obj->head, **origin, **prev;
+    node_t *curr = Obj->head, *next, *prev=NULL;
 
     node_t *newNode = (node_t*)malloc(sizeof(node_t));
     newNode->val = val;
@@ -113,15 +113,24 @@ static void insertNode(list_t *Obj, uint32_t position, int32_t val){
 
     uint32_t cnt = 1;
 
-    while(cnt != position){
-        prev = indirect;
-        indirect = &(*indirect)->next;
+    while(cnt < position-1){
+        prev = curr;
+        curr = curr->next;
         cnt++;
     }
-    origin = indirect;
-    *indirect = newNode;
-    (*indirect)->prev = *prev;
-    (*indirect)->next = *origin;
-    (*origin)->prev = *indirect;
+
+    if(!prev){
+        newNode->next = curr;
+        curr->prev = newNode;
+        Obj->head = newNode;
+    } else {
+        next = curr->next;
+        curr->next = newNode;
+        newNode->prev = curr;
+        newNode->next = next;
+        next->prev = newNode;
+    }
+    
+    Obj->len++;
 }
 

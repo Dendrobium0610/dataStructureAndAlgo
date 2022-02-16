@@ -18,9 +18,11 @@ int main(int argc, char *argv[]){
     list->Show(list);
     printf("list length: %d\n", list->GetLen(list));
 
-    list->Insert(list, 2, 10);
+    list->Insert(list, 1, 10);
     list->Show(list);
     printf("list length: %d\n", list->GetLen(list));
 
+    deleteList(list);
+    list = NULL;
     return 0;
 }
