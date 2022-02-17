@@ -24,6 +24,7 @@ list_t* newList(int32_t *arr, uint32_t arrLen)
     Obj->Show = &showList;
     Obj->GetLen = &getLen;
     Obj->Insert = &insertNode;
+    Obj->Delete = &deleteNode;
 
     for (int idx = 1; idx < arrLen; idx++){
         node_t *newNode = (node_t*)malloc(sizeof(node_t));
@@ -70,12 +71,12 @@ static void appendNode(list_t *Obj, int32_t val)
 }
 
 
-static void removeNode(list_t *Obj, uint32_t position)
+static void deleteNode(list_t *Obj, uint32_t num)
 {
-    //remove the element at position from list
+    //delete element at the ordinal num of the list
     uint32_t cnt=1;
     node_t **indirect = &Obj->head, *target;
-    while (cnt != position){
+    while (cnt != num){
         indirect = &(*indirect)->next;
         cnt++;
     }
@@ -85,6 +86,23 @@ static void removeNode(list_t *Obj, uint32_t position)
     (*indirect)->prev = target->prev;
     target->next = target->prev = NULL;
     free(target);
+    Obj->len--;
+}
+
+
+static void removeNode(list_t *Obj, uint32_t num)
+{
+    // remove element at the ordinal num of the list
+    uint32_t cnt=1;
+    node_t **indirect = &Obj->head, *target;
+    while (cnt != num){
+        indirect = &(*indirect)->next;
+        cnt++;
+    }
+
+    target = *indirect;  
+    *indirect = target->next;
+    (*indirect)->prev = target->prev;
     Obj->len--;
 }
 
@@ -109,8 +127,9 @@ static uint32_t getLen(list_t *Obj)
 }
 
 
-static void insertNode(list_t *Obj, uint32_t position, int32_t val)
+static void insertNode(list_t *Obj, uint32_t num, int32_t val)
 {
+    // insert new element at the ordinal num of the list
     node_t **curr = &Obj->head;
 
     node_t *newNode = (node_t*)malloc(sizeof(node_t));
@@ -118,7 +137,7 @@ static void insertNode(list_t *Obj, uint32_t position, int32_t val)
 
     uint32_t cnt = 1;
 
-    while (cnt != position){
+    while (cnt != num){
         curr = &(*curr)->next;
         cnt++;
     }

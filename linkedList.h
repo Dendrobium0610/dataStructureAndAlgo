@@ -10,6 +10,7 @@ typedef void (*fptrAppend)(list_t *Obj, int32_t val);
 typedef void (*fptrRemove)(list_t *Obj, uint32_t position);
 typedef void (*fptrShow)(list_t *Obj);
 typedef void (*fptrInsert)(list_t *Obj, uint32_t position, int32_t val);
+typedef void (*fptrDelete)(list_t *Obj, uint32_t position);
 typedef uint32_t (*fptrGetLen)(list_t *Obj);
 
 list_t* newList(int32_t *arr, uint32_t arrLen);
@@ -18,6 +19,7 @@ void deleteList(list_t *list);
 static void showList(list_t *Obj);
 static void appendNode(list_t *Obj, int32_t val);
 static void removeNode(list_t *Obj, uint32_t position);
+static void deleteNode(list_t *Obj, uint32_t position);
 static void insertNode(list_t *Obj, uint32_t position, int32_t val);
 static uint32_t getLen(list_t *Obj);
 
@@ -39,5 +41,6 @@ struct list{
     fptrShow   Show;
     fptrGetLen GetLen;
     fptrInsert Insert;
+    fptrDelete Delete;
 };
 #endif
