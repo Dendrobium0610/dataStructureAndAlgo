@@ -4,17 +4,18 @@
 #include <stdlib.h>
 
 
-list_t* newList(int32_t *arr, uint32_t arrLen){
+list_t* newList(int32_t *arr, uint32_t arrLen)
+{
     if (!arr) return NULL;
     node_t *head = (node_t*)malloc(sizeof(node_t));
-    if(!head)  return NULL;
+    if (!head) return NULL;
     
     node_t *curr = head;
     head->prev = head->next = NULL;
     head->val = arr[0];
 
     list_t *Obj = (list_t*)malloc(sizeof(list_t));
-    if(!Obj) return NULL;
+    if (!Obj) return NULL;
     
     Obj->head = head;
     Obj->len = 1;
@@ -24,9 +25,9 @@ list_t* newList(int32_t *arr, uint32_t arrLen){
     Obj->GetLen = &getLen;
     Obj->Insert = &insertNode;
 
-    for(int idx = 1; idx < arrLen; idx++){
+    for (int idx = 1; idx < arrLen; idx++){
         node_t *newNode = (node_t*)malloc(sizeof(node_t));
-        if(!newNode) {
+        if (!newNode) {
             fprintf(stderr, "memory allocation failed.");
         }        
         Obj->len++;
@@ -41,10 +42,11 @@ list_t* newList(int32_t *arr, uint32_t arrLen){
 }
 
 
-static void showList(list_t *Obj){
+static void showList(list_t *Obj)
+{
     node_t *curr = Obj->head;
     printf("[");
-    while(curr){
+    while (curr){
         printf("%d, ", curr->val);
         curr = curr->next;
     }
@@ -52,44 +54,46 @@ static void showList(list_t *Obj){
 }
 
 
-static void appendNode(list_t *Obj, int32_t val){
+static void appendNode(list_t *Obj, int32_t val)
+{
     node_t *indirect = Obj->head;
         
-    while(indirect->next){
+    while (indirect->next){
        indirect = indirect->next; 
     }
 
     node_t *newNode = (node_t*)malloc(sizeof(node_t));
-    newNode->prev = newNode->next = NULL;
     newNode->val = val;
     indirect->next = newNode;
+    newNode->prev = indirect;
     Obj->len++;
 }
 
 
-static void removeNode(list_t *Obj, uint32_t position){
+static void removeNode(list_t *Obj, uint32_t position)
+{
     //remove the element at position from list
     uint32_t cnt=1;
-    node_t **indirect = &Obj->head, **prev, *target;
-    while(cnt != position){
-        prev = indirect;
+    node_t **indirect = &Obj->head, *target;
+    while (cnt != position){
         indirect = &(*indirect)->next;
         cnt++;
     }
 
-    target = *indirect;   
+    target = *indirect;  
     *indirect = target->next;
-    (*indirect)->prev = *prev;
-    target->next = NULL;
+    (*indirect)->prev = target->prev;
+    target->next = target->prev = NULL;
     free(target);
     Obj->len--;
 }
 
 
-void deleteList(list_t *Obj){
+void deleteList(list_t *Obj)
+{
     node_t *curr = Obj->head, *target;
 
-    while(curr){
+    while (curr){
         target = curr;
         target->next = target->prev = NULL;
         free(target);
@@ -99,38 +103,28 @@ void deleteList(list_t *Obj){
 }
 
 
-static uint32_t getLen(list_t *Obj){
+static uint32_t getLen(list_t *Obj)
+{
     return Obj->len;
 }
 
 
-static void insertNode(list_t *Obj, uint32_t position, int32_t val){
-    node_t *curr = Obj->head, *next, *prev=NULL;
+static void insertNode(list_t *Obj, uint32_t position, int32_t val)
+{
+    node_t **curr = &Obj->head;
 
     node_t *newNode = (node_t*)malloc(sizeof(node_t));
     newNode->val = val;
-    newNode->next = newNode->prev = NULL;
 
     uint32_t cnt = 1;
 
-    while(cnt < position-1){
-        prev = curr;
-        curr = curr->next;
+    while (cnt != position){
+        curr = &(*curr)->next;
         cnt++;
     }
-
-    if(!prev){
-        newNode->next = curr;
-        curr->prev = newNode;
-        Obj->head = newNode;
-    } else {
-        next = curr->next;
-        curr->next = newNode;
-        newNode->prev = curr;
-        newNode->next = next;
-        next->prev = newNode;
-    }
-    
+    newNode->next = *curr;
+    newNode->prev = (*curr)->prev;
+    (*curr)->prev = newNode;
+    *curr = newNode;   
     Obj->len++;
 }
-
